@@ -1,4 +1,4 @@
-name: Daily Sports Scraper
+name: Daily Sports Pipeline
 
 on:
   schedule:
@@ -10,7 +10,11 @@ on:
 jobs:
   scrape-and-upload:
     runs-on: ubuntu-latest
-    timeout-minutes: 120  # 2 hours max runtime
+    timeout-minutes: 240  # 4 hours max runtime per job
+    strategy:
+      matrix:
+        scraper: [sports_sub1, sports_sub2]
+      fail-fast: false  # Continue running other jobs even if one fails
     
     steps:
       - name: Checkout repository
@@ -32,23 +36,13 @@ jobs:
           playwright install chromium
           playwright install-deps chromium
 
-      - name: Run Sports Scraper - Group 1
+      - name: Run Sports Scraper - ${{ matrix.scraper }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
         run: |
-          python -m sports_sub1.main
-        continue-on-error: true
-
-      - name: Run Sports Scraper - Group 2
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
-        run: |
-          python -m sports_sub2.main
-        continue-on-error: true
+          python -m ${{ matrix.scraper }}.main
 
       - name: Clean up temp files
         if: always()
