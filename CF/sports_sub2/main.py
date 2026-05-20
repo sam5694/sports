@@ -166,7 +166,7 @@ class BoutiqaatDataPipeline:
             
             safe_category = "".join(c for c in category_name if c.isalnum() or c in (' ', '_')).rstrip()
             s3_path = (
-                f"boutiqaat-data/year={datetime.now().strftime('%Y')}/month={datetime.now().strftime('%m')}/day={datetime.now().strftime('%d')}/men/eyewear/images/"
+                f"boutiqaat-data/year={datetime.now().strftime('%Y')}/month={datetime.now().strftime('%m')}/day={datetime.now().strftime('%d')}/men/sports/images/"
                 f"{safe_category}"
             )
             filename = f"{sku}_image.jpg"
@@ -185,7 +185,7 @@ class BoutiqaatDataPipeline:
             timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
             filename = f"{category_name}_{timestamp}.xlsx"
             s3_path = (
-                f"boutiqaat-data/year={datetime.now().strftime('%Y')}/month={datetime.now().strftime('%m')}/day={datetime.now().strftime('%d')}/men/eyewear/excel-files"
+                f"boutiqaat-data/year={datetime.now().strftime('%Y')}/month={datetime.now().strftime('%m')}/day={datetime.now().strftime('%d')}/men/sports/excel-files"
             )
             s3_key = self.uploader.upload_local_file(
                 local_path,
